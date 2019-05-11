@@ -35,7 +35,9 @@ RUN apk update && apk add openssl p7zip \
 	lighttpd \
 	lighttpd-mod_auth \
 	curl \
-  && rm -rf /var/cache/apk/*
+	&& rm -rf /var/cache/apk/* \
+	&& sed -i -e 's/^root::/root:!:/' /etc/shadow
+# Last step is to remove null root password if present (CVE-2019-5021)
 
 ## workaround for bug preventing sync between VirtualBox and host
 # http://serverfault.com/questions/240038/lighttpd-broken-when-serving-from-virtualbox-shared-folder
