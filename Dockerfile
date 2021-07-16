@@ -10,14 +10,14 @@
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 1: Build sgrep
-FROM docker.io/alpine:3.13.4 AS build
+FROM docker.io/library/alpine:3.14.0 AS build
 RUN apk update && apk add git make gcc musl-dev
 RUN git clone https://github.com/colinscape/sgrep
 RUN mkdir sgrep/bin && cd sgrep/src && make
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 2: Build final image
-FROM docker.io/alpine:3.13.4
+FROM docker.io/library/alpine:3.14.0
 
 # Image MAINTAINER
 LABEL maintainer="Clifford Weinmann <clifford@weinmann.co.za>"
