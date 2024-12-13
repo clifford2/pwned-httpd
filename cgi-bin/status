@@ -5,17 +5,20 @@
 echo "Content-type: text/plain; charset=utf-8"
 
 if [ ! -d /data ]; then
-	echo -e "Status: 400 Bad Request\n"
+	echo "Status: 400 Bad Request"
+	echo ''
 	echo "No /data directory mounted."
 	exit 0
 fi
 
 if [ ! -f /data/*.txt ]; then
-	echo -e "Status: 400 Bad Request\n"
+	echo "Status: 400 Bad Request"
+	echo ''
 	echo "No password file(s) found."
 	exit 0
 fi
 
-echo -e "Status: 200 OK\n"
+echo "Status: 200 OK"
+	echo ''
 echo "pong"
 exit 0

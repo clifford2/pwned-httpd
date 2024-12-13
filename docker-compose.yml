@@ -1,4 +1,4 @@
-# Example docker compose file
+# Pwned Passwords service (https://haveibeenpwned.com/Passwords)
 
 version: '3.1'                                                                                                                      
 
@@ -8,14 +8,12 @@ networks:
 
 #-# Define services
 services:
-  ## Pwned Passwords service (https://haveibeenpwned.com/Passwords)
   pwned-passwords:
-    image: cliffordw/pwned-httpd
+    image: pwned-httpd
     volumes:
-      - "/path/to/pwnedpasswords/download:/data:ro"
+      - "/path/to/pwnedpasswords/download:/data:ro,z"
     networks:
       your-network:
     restart: on-failure
-    # Optional: Expose HTTP port for testing
     ports:
       - "2080:80"
