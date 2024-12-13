@@ -1,0 +1,61 @@
+#!/bin/bash
+# CGI script for Docker HEALTHCHECK
+# Access at http://127.0.0.1:8080/healthz
+
+DATADIR=${DATADIR:-/data}
+
+echo "Content-type: text/plain; charset=utf-8"
+errors=()
+
+if [ ! -d "${DATADIR}" ]; then
+	errors+=("No ${DATADIR} directory mounted")
+fi
+
+if [ ! -z "${SHA1_FILENAME}" ]
+then
+	if [ ! -f "${DATADIR}/${SHA1_FILENAME}" ]
+	then
+		errors+=("SHA-1 data file ${DATADIR}/${SHA1_FILENAME} not found")
+	elif [ ! -r "${DATADIR}/${SHA1_FILENAME}" ]
+	then
+		errors+=("SHA-1 data file ${DATADIR}/${SHA1_FILENAME} not accessible")
+	fi
+fi
+
+if [ ! -z "${NTLM_FILENAME}" ]
+then
+	if [ ! -f "${DATADIR}/${NTLM_FILENAME}" ]
+	then
+		errors+=("NTLM data file ${DATADIR}/${NTLM_FILENAME} not found")
+	elif [ ! -r "${DATADIR}/${NTLM_FILENAME}" ]
+	then
+		errors+=("NTLM data file ${DATADIR}/${NTLM_FILENAME} not accessible")
+	fi
+fi
+
+if [ -z "${SHA1_FILENAME}" -a -z "${NTLM_FILENAME}" ]
+then
+	if [ ! -d "${DATADIR}/sha1" -a ! -d "${DATADIR}/ntlm" ]
+	then
+		errors+=('One of the following is required:')
+		errors+=('  $SHA1_FILENAME pointing to a single SHA1 hash list')
+		errors+=('  $NTLM_FILENAME pointing to a single NTLM hash list')
+		errors+=("  A directory containing individual SHA1 hash files, mounted into ${DATADIR}/sha1")
+		errors+=("  A directory containing individual NTLM hash files, mounted into ${DATADIR}/ntlm")
+	fi
+fi
+
+if [ ${#errors[@]} -gt 0 ]
+then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	for msg in "${errors[@]}"                                                                                                     
+	do
+		echo "$msg"
+	done
+else
+	echo 'Status: 200 OK'
+	echo 'Content-Length: 0'
+	echo ''
+fi
+exit 0

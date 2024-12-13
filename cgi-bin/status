@@ -1,24 +1,6 @@
 #!/bin/sh
-# CGI script for Docker HEALTHCHECK
-# Access at http://127.0.0.1:8080/status
-
-echo "Content-type: text/plain; charset=utf-8"
-
-if [ ! -d /data ]; then
-	echo "Status: 400 Bad Request"
-	echo ''
-	echo "No /data directory mounted."
-	exit 0
-fi
-
-if [ ! -f /data/*.txt ]; then
-	echo "Status: 400 Bad Request"
-	echo ''
-	echo "No password file(s) found."
-	exit 0
-fi
-
-echo "Status: 200 OK"
-	echo ''
-echo "pong"
-exit 0
+# Redirect for backward compatibility
+echo 'Status: 302 Found'
+echo 'Location: /healthz'
+echo 'Content-Length: 0'
+echo ''

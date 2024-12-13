@@ -5,11 +5,12 @@
 
 DATADIR=${DATADIR:-/data}
 echo "DATADIR = [${DATADIR}]"
-echo "FILENAME = [${FILENAME}]"
+echo "SHA1_FILENAME = [${SHA1_FILENAME}]"
+echo "NTLM_FILENAME = [${NTLM_FILENAME}]"
 
 # Validate setup
 if [ ! -d "${DATADIR}" ]; then
-	echo "Please run this container with the password hash directory mounted at ${DATADIR}."
+	echo "Error: Please run this container with the password hash directory mounted at ${DATADIR}."
 	# echo "podman run --rm -v \$(pwd):${DATADIR} pwned-httpd"
 	exit 1
 fi
@@ -17,16 +18,36 @@ fi
 cd "${DATADIR}"
 if [ $? -ne 0 ]
 then
-	echo "Could not access ${DATADIR}"
+	echo "Error: Could not access ${DATADIR}"
 	exit 1
 fi
 
-# Link single file in $FILENAME to known name for CGI script to find
-if [ ! -z "${FILENAME}" -a -f "${FILENAME}" ]
+# Link single files to known names for CGI scripts to find
+if [ ! -z "${SHA1_FILENAME}" -a -f "${SHA1_FILENAME}" ]
 then
-	ln -s "${DATADIR}/${FILENAME}" /tmp/.hibp.single.txt
-	echo "Found ${FILENAME}:"
-	ls -l /tmp/.hibp.single.txt
+	ln -s "${DATADIR}/${SHA1_FILENAME}" /tmp/.hibp.sha1.txt
+	echo "Found ${SHA1_FILENAME}:"
+	ls -l /tmp/.hibp.sha1.txt
+fi
+if [ ! -z "${NTLM_FILENAME}" -a -f "${NTLM_FILENAME}" ]
+then
+	ln -s "${DATADIR}/${NTLM_FILENAME}" /tmp/.hibp.ntlm.txt
+	echo "Found ${NTLM_FILENAME}:"
+	ls -l /tmp/.hibp.ntlm.txt
+fi
+
+# Validate that we have data to work with
+if [ ! -e /tmp/.hibp.sha1.txt -a ! -e /tmp/.hibp.ntlm.txt ]
+then
+	if [ ! -d "${DATADIR}/sha1" -a ! -d "${DATADIR}/ntlm" ]
+	then
+		echo 'Error: please provide one of:'
+		echo '  $SHA1_FILENAME pointing to a single SHA1 hash list'
+		echo '  $NTLM_FILENAME pointing to a single NTLM hash list'
+		echo "  A directory containing individual SHA1 hash files, mounted into ${DATADIR}/sha1"
+		echo "  A directory containing individual NTLM hash files, mounted into ${DATADIR}/ntlm"
+		exit 1
+	fi
 fi
 
 tail -F /var/log/lighttpd/access.log 2>/dev/null &

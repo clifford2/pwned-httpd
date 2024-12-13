@@ -1,26 +1,7 @@
 #!/bin/sh
-# CGI script to calculate SHA1 hash for a password.
-#
-# Access at http://127.0.0.1:8080/hash/Password
-#
-# Test from command line with:
-#   REQUEST_URI='/hash/Password' sh cgi-bin/hash
-# Returns: 8BE3C943B1609FFFBFC51AAD666D0A04ADF83C9D
-
-echo "Content-type: text/plain; charset=utf-8"
-
-basename=$(basename $0)
-args=$(echo "$REQUEST_URI" | sed -e "s|^/$basename||" -e 's|^/||')
-
-if [ -z "$args" ]
-then
-	echo "Status: 400 Bad Request"
-	echo ''
-	echo "No password specified"
-	exit 0
-fi
-
-echo "Status: 200 OK"
+# Redirect for backward compatibility
+uri=$(echo "$REQUEST_URI" | sed -e 's|^/hash|/sha1hash|')
+echo 'Status: 302 Found'
+echo "Location: $uri"
+echo 'Content-Length: 0'
 echo ''
-echo -n "$args" | openssl sha1 | awk 'BEGIN { getline; print toupper($2) }'
-exit 0

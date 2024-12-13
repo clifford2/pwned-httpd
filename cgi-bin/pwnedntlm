@@ -1,0 +1,109 @@
+#!/bin/sh
+# CGI script to search for a NTLM password hash
+#
+# Access at http://127.0.0.1:8080/pwnedntlm/{ntlmhash}
+
+DATADIR=${DATADIR:-/data}
+
+echo 'Content-type: text/plain; charset=utf-8'
+
+if [ ! -d "${DATADIR}" ]; then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo "Please run this container with the password hash base directory mounted at ${DATADIR}"
+	exit 0
+fi
+
+if [ ! -d "${DATADIR}/ntlm" ]; then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo "Please run this container with the NTLM password hash directory mounted at ${DATADIR}/ntlm"
+	exit 0
+fi
+
+cd "${DATADIR}/ntlm"
+if [ $? -ne 0 ]
+then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo "Could not access ${DATADIR}/ntlm"
+	exit 0
+fi
+
+basename=$(basename $0)
+args=$(echo "$REQUEST_URI" | sed -e "s|^/$basename||" -e 's|^/||')
+
+if [ -z "$args" ]
+then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo 'No password hash specified'
+	exit 0
+fi
+
+#echo ''
+#echo "QUERY_STRING = [$QUERY_STRING]"
+#echo "REQUEST_URI = [$REQUEST_URI]"
+#echo "args = [$args]"
+
+fullhash=`echo -n "$args" | tr '[:lower:]' '[:upper:]'`
+totalcount=0
+
+# Find the file to search
+# If hashes were downloaded to a single file, we need it's $FILENAME
+# - The container entrypoint script will link that file to /tmp/.hibp.ntlm.txt
+# - This file contains 32 character upper case NTLM hash, followed by colon and count of entries in HIBP database
+# If no filename is specified, we assume we're in a directory with split files
+# - File name is first 5 digits of hash, with .txt extension
+# - File contains remaining 27 characters of upper case NTLM hash, followed by colon and count of entries in HIBP database
+if [ -e /tmp/.hibp.ntlm.txt ]
+then
+	FILENAME='/tmp/.hibp.ntlm.txt'
+	hash="${fullhash}"
+else
+	FILENAME=${PWD}/$(echo "${fullhash}" | cut -c1-5).txt
+	hash=$(echo "${fullhash}" | cut -c6-)
+	if [ -z "${hash}" ]
+	then
+		echo 'Status: 400 Bad Request'
+		echo ''
+		echo 'Hash is too short - at least 6 characters required'
+		exit 0
+	fi
+fi
+
+# Search the file for the hash
+if [ ! -e "$FILENAME" ]
+then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo "Could not find ${FILENAME}"
+	exit 0
+elif [ ! -r "$FILENAME" ]
+then
+	echo 'Status: 400 Bad Request'
+	echo ''
+	echo "Could not open ${FILENAME}"
+	exit 0
+else
+	for s in $(/usr/local/bin/sgrep "$hash" "$FILENAME" | tr -d '\r')
+	do
+		count=$(echo "$s" | cut -f2 -d:)
+		totalcount=$(( $totalcount + $count ))
+	done
+fi
+
+# Did we find a match?
+if [ $totalcount -eq 0 ]
+then
+	echo 'Status: 404 Not found'
+	echo 'Content-Length: 0'
+	echo ''
+	# echo "Good news - no pwnage of [$args] found!"
+else
+	echo 'Status: 200 OK'
+	echo ''
+	echo "$totalcount"
+fi
+
+exit 0
