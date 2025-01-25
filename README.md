@@ -151,15 +151,19 @@ This software is based on the following contributions:
 
 - [Alpine Linux](https://alpinelinux.org/)
 - [Lighttpd](https://www.lighttpd.net/)
-	- [Revised BSD license](http://www.lighttpd.net/assets/COPYING)
 - Docker image based on Sébastien Pujadas' [lighttpd Docker image](https://github.com/spujadas/lighttpd-docker)
-	- [MIT License](https://github.com/spujadas/lighttpd-docker/blob/master/LICENSE)
 - Search script based on Stefan Scherer's CLI [pwned-passwords](https://github.com/StefanScherer/pwned-passwords)
-	- [GNU General Public License v3.0](https://github.com/StefanScherer/pwned-passwords/blob/master/LICENSE)
 - Uses [sgrep](https://sourceforge.net/projects/sgrep/) to do the search
-	- [GNU General Public License v3.0](https://github.com/colinscape/sgrep/blob/master/COPYING)
 
 All content is copyrighted by the original authors.
 
-I dedicate any and all copyright interest in my own
-contributions to this software to the public domain.
+My own contributions are free and unencumbered software released into the public domain.
+
+## Security
+
+This code is provided *AS IS*, without warranty of any kind.
+See [`LICENSES/`](LICENSES) for the full license text and disclaimers.
+
+This code is updated as often as possible, but support is provided on a best effort basis only.
+
+Please report any problems or vulnerabilities by opening a [GitHub issue here](https://github.com/clifford2/pwned-httpd/issues).
