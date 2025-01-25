@@ -4,7 +4,7 @@ version = 1
 path = ["src/*"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© 2009 Stephen C. Losen"
-SPDX-License-Identifier = "GPL-1.0-or-later"
+SPDX-License-Identifier = "GPL-3.0-only"
 
 [[annotations]]
 path = ["README.md", "lighttpd-conf/*"]

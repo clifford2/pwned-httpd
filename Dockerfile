@@ -1,6 +1,7 @@
-# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+# SPDX-FileCopyrightText: © 2015 Sébastien Pujadas
+# SPDX-FileContributor: Clifford Weinmann <https://www.cliffordweinmann.com/>
 #
-# SPDX-License-Identifier: Unlicense
+# SPDX-License-Identifier: MIT
 
 # Docker image to run web service that will search a local copy of
 # Troy Hunt's [Pwned Passwords](https://haveibeenpwned.com/Passwords).
