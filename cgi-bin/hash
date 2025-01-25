@@ -1,4 +1,9 @@
 #!/bin/sh
+
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: Unlicense
+
 # Redirect for backward compatibility
 uri=$(echo "$REQUEST_URI" | sed -e 's|^/hash|/sha1hash|')
 echo 'Status: 302 Found'

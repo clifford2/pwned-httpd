@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: Unlicense
+
 # This launcher script tails the lighttpd access and error logs
 # to the stdout and stderr, so that `podman logs -f pwned-httpd` works.
 
