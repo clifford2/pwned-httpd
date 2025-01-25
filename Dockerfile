@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
+#
+# SPDX-License-Identifier: Unlicense
+
 # Docker image to run web service that will search a local copy of
 # Troy Hunt's [Pwned Passwords](https://haveibeenpwned.com/Passwords).
 #
@@ -6,11 +10,11 @@
 #
 # Based on [Lighttpd docker image](https://github.com/spujadas/lighttpd-docker)
 # and Stefan Scherer's CLI [pwned-passwords](https://github.com/StefanScherer/pwned-passwords).
-# Uses [sgrep](https://github.com/colinscape/sgrep) to search.
+# Uses Stephen C. Losen's [sgrep](https://github.com/colinscape/sgrep) to search.
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 1: Build sgrep
-FROM docker.io/library/alpine:3.21.0 AS build
+FROM docker.io/library/alpine:3.21.2 AS build
 ENV LC_ALL=C
 RUN apk update && apk add gcc musl-dev && mkdir /src
 COPY src/sgrep.c /src/sgrep.c
@@ -18,7 +22,7 @@ RUN gcc -o /src/sgrep /src/sgrep.c
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 2: Build final image
-FROM docker.io/library/alpine:3.21.0 as final
+FROM docker.io/library/alpine:3.21.2 as final
 
 # Image MAINTAINER
 LABEL maintainer="Clifford Weinmann <clifford@weinmann.africa>"
