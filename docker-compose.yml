@@ -8,7 +8,7 @@ version: '3.1'
 
 #-# Define the network
 networks:
-  your-network:
+  pwned-network:
 
 #-# Define services
 services:
@@ -17,7 +17,7 @@ services:
     volumes:
       - "/path/to/pwnedpasswords/download:/data:ro,z"
     networks:
-      your-network:
+      pwned-network:
     restart: on-failure
     ports:
       - "2080:80"

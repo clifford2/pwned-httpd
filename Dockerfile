@@ -15,7 +15,7 @@
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 1: Build sgrep
-FROM docker.io/library/alpine:3.21.2 AS build
+FROM docker.io/library/alpine:3.21.3 AS build
 ENV LC_ALL=C
 RUN apk update && apk add gcc musl-dev && mkdir /src
 COPY src/sgrep.c /src/sgrep.c
@@ -23,10 +23,10 @@ RUN gcc -o /src/sgrep /src/sgrep.c
 
 #--------------------------------------------------------------------#                                                              
 #-# Stage 2: Build final image
-FROM docker.io/library/alpine:3.21.2 as final
+FROM docker.io/library/alpine:3.21.3 as final
 
 # Image MAINTAINER
-LABEL maintainer="Clifford Weinmann <clifford@weinmann.africa>"
+LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
 
 ENV LC_ALL=C
 RUN apk update && apk add openssl p7zip \
@@ -39,7 +39,7 @@ RUN apk update && apk add openssl p7zip \
 
 COPY --from=build --chmod=0755 /src/sgrep /usr/local/bin/sgrep
 COPY --chmod=0644 lighttpd-conf/* /etc/lighttpd/
-COPY --chmod=0755 bin/entrypoint.sh /usr/local/bin/
+COPY --chmod=0755 bin/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY --chmod=0755  cgi-bin/* /var/www/localhost/cgi-bin/
 
 EXPOSE 8080
