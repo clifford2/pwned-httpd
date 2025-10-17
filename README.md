@@ -130,7 +130,11 @@ The HTTP status code indicates whether a match is found. Possible status codes a
 
 ### `/healthz`
 
-Reports on the status of the container, for healthchecks.
+Reports on the status of the container, for healthchecks. Example:
+
+```sh
+curl --include http://0.0.0.0:2080/healthz
+```
 
 ## Copyright
 

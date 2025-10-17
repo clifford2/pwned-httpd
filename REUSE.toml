@@ -7,7 +7,7 @@ SPDX-FileCopyrightText = "© 2009 Stephen C. Losen"
 SPDX-License-Identifier = "GPL-3.0-only"
 
 [[annotations]]
-path = ["README.md", "lighttpd-conf/*"]
+path = ["README.md", "lighttpd-conf/*", "test/**"]
 precedence = "closest"
 SPDX-FileCopyrightText = "© 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>"
 SPDX-License-Identifier = "Unlicense"
