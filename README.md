@@ -25,7 +25,16 @@ As of April 2025, the best way to get the most up to date passwords is to use
 [the Pwned Passwords downloader](https://github.com/HaveIBeenPwned/PwnedPasswordsDownloader).
 You can download this as a single file or as smaller individual `.txt` files.
 
-### Running the container image
+For the samples in my [tests](test), I downloaded sample ranges of SHA-1
+data from the HIBP [API](https://haveibeenpwned.com/API/v3) with:
+
+```
+GET https://api.pwnedpasswords.com/range/{first 5 hash chars}
+```
+
+NTLM hashes are downloaded from similar URLs, but appending `?mode=ntlm`.
+
+### Running The Container Image
 
 You can provide either SHA-1 or NTLM hashes, or both. Obviously only the
 functions for which you provide data will work ;-)
