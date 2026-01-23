@@ -1,4 +1,9 @@
 # SPDX-FileCopyrightText: © 2019 Clifford Weinmann <https://www.cliffordweinmann.com/>
 # SPDX-License-Identifier: Unlicense
+Makefile
+README.md
+REUSE.toml
+docker-compose.yml
 LICENSES/
 test/
+not-in-git/

@@ -2,13 +2,17 @@
 # Test the container image with some sample hashes
 
 # Start the container
+CONTAINER_ENGINE=${CONTAINER_ENGINE:-podman}
+IMAGE=${IMAGE:-pwned-httpd:latest}
+CONTAINER=pwned-httpd-test
+cd $(dirname $0)
 chmod 0755 .
 chmod -R a+rX sha1 ntlm
-${CONTAINER_ENGINE:-podman} run --rm -d --replace \
+${CONTAINER_ENGINE} run -d --replace \
 	-v "${PWD}:/data:ro,Z" \
 	-p 2080:8080 \
-	--name pwned-httpd \
-	${IMAGE:-pwned-httpd:latest}
+	--name ${CONTAINER} \
+	${IMAGE}
 
 testcnt=0
 errcnt=0
@@ -26,7 +30,11 @@ echo "Test $testcnt: SHA1 hash calc: $res"
 
 hashcnt=$(curl --silent http://0.0.0.0:2080/pwnedsha1/03DE6C570BFE24BFC328CCD7CA46B76EADAF4334)
 (( testcnt = testcnt + 1 ))
-if [ ! -z "$hashcnt" -a $hashcnt -gt 0 ]
+if [ -z "${hashcnt}" ]
+then
+	hashcnt=0
+fi
+if [ $hashcnt -gt 0 ]
 then
 	res='OK'
 else
@@ -48,7 +56,11 @@ echo "Test $testcnt: negative SHA1 hash lookup: $res"
 
 hashcnt=$(curl --silent http://0.0.0.0:2080/pwnedntlm/00001017667987ADC75481DCCC94E24A)
 (( testcnt = testcnt + 1 ))
-if [ ! -z "$hashcnt" -a $hashcnt -gt 0 ]
+if [ -z "${hashcnt}" ]
+then
+	hashcnt=0
+fi
+if [ $hashcnt -gt 0 ]
 then
 	res='OK'
 else
@@ -69,7 +81,13 @@ fi
 echo "Test $testcnt: negative NTLM hash lookup: $res"
 
 # Stop the container
-${CONTAINER_ENGINE:-podman} stop pwned-httpd
+if [ $errcnt -gt 0 ]
+then
+	${CONTAINER_ENGINE} ps -a
+	${CONTAINER_ENGINE} logs ${CONTAINER}
+fi
+${CONTAINER_ENGINE} stop ${CONTAINER}
+${CONTAINER_ENGINE} rm ${CONTAINER}
 
 # Feedback
 if [ $errcnt -gt 0 ]
