@@ -4,11 +4,11 @@
 # Start the container
 chmod 0755 .
 chmod -R a+rX sha1 ntlm
-podman run --rm -d --replace \
+${CONTAINER_ENGINE:-podman} run --rm -d --replace \
 	-v "${PWD}:/data:ro,Z" \
 	-p 2080:8080 \
 	--name pwned-httpd \
-	pwned-httpd
+	${IMAGE:-pwned-httpd:latest}
 
 testcnt=0
 errcnt=0
@@ -69,7 +69,7 @@ fi
 echo "Test $testcnt: negative NTLM hash lookup: $res"
 
 # Stop the container
-podman stop pwned-httpd
+${CONTAINER_ENGINE:-podman} stop pwned-httpd
 
 # Feedback
 if [ $errcnt -gt 0 ]
