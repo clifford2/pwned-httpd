@@ -14,7 +14,7 @@
 
 #--------------------------------------------------------------------#
 #-# Stage 1: Build sgrep
-FROM docker.io/library/alpine:3.23.2 AS build
+FROM docker.io/library/alpine:3.24.4 AS build
 ENV LC_ALL=C
 RUN apk update && apk add gcc musl-dev && mkdir /src
 COPY src/sgrep.c /src/sgrep.c
@@ -22,7 +22,7 @@ RUN gcc -o /src/sgrep /src/sgrep.c
 
 #--------------------------------------------------------------------#
 #-# Stage 2: Build final image
-FROM docker.io/library/alpine:3.23.2 as final
+FROM docker.io/library/alpine:3.24.4 as final
 
 # Image labels
 LABEL maintainer="Clifford Weinmann <https://www.cliffordweinmann.com/>"
